@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot name="diff_drive">
+
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/bot_body.stl"
+                    scale="1.0 1.0 1.0" />
+            </geometry>
+            <origin xyz="0.0 0.0 1.35" />
+        </visual>
+    </link>
+
+    <link name="left_wheel">
+        <visual>
+            <geometry>
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/wheel.STL"
+                    scale="2.0 2.0 2.0" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0 1.57 0.0" />
+        </visual>
+    </link>
+
+    <link name="right_wheel">
+        <visual>
+            <geometry>
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/wheel.STL"
+                    scale="2.0 2.0 2.0" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0 1.57 0.0" />
+        </visual>
+    </link>
+
+    <link name="caster_part">
+        <visual>
+            <geometry>
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_part.STL"
+                    scale="1.0 1.0 1.0" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        </visual>
+    </link>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="left_wheel" />
+        <origin xyz="-1.0 -1.6 0.4" rpy="0.0 0.0 0.0" />
+    </joint>
+
+
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="right_wheel" />
+        <origin xyz="1.19 -1.6 0.4" rpy="0.0 0.0 0.0" />
+    </joint>
+
+    <joint name="caster_part_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="caster_part" />
+        <origin xyz="0.0 0.0 0.0" rpy="-1.57 0.0 0.0"/>
+    </joint>
+
+
+</robot>

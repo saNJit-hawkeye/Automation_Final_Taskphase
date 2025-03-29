@@ -1,0 +1,25 @@
+[0.005s] Invoking command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client -- -j16 -l16
+[0.048s] [ 50%] [32mBuilding CXX object CMakeFiles/client_main.dir/main.cpp.o[0m
+[2.186s] [100%] [32m[1mLinking CXX executable client_main[0m
+[2.291s] [100%] Built target client_main
+[2.300s] Invoked command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client -- -j16 -l16
+[2.301s] Invoking command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client
+[2.306s] -- Install configuration: ""
+[2.306s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/lib/examples_rclcpp_minimal_client/client_main
+[2.306s] -- Set runtime path of "/home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/lib/examples_rclcpp_minimal_client/client_main" to ""
+[2.306s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/ament_index/resource_index/package_run_dependencies/examples_rclcpp_minimal_client
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/ament_index/resource_index/parent_prefix_path/examples_rclcpp_minimal_client
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/environment/ament_prefix_path.sh
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/environment/ament_prefix_path.dsv
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/environment/path.sh
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/environment/path.dsv
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/local_setup.bash
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/local_setup.sh
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/local_setup.zsh
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/local_setup.dsv
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/package.dsv
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/ament_index/resource_index/packages/examples_rclcpp_minimal_client
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/cmake/examples_rclcpp_minimal_clientConfig.cmake
+[2.307s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/cmake/examples_rclcpp_minimal_clientConfig-version.cmake
+[2.308s] -- Installing: /home/sanjit/ros2_ws/src/install/examples_rclcpp_minimal_client/share/examples_rclcpp_minimal_client/package.xml
+[2.309s] Invoked command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_client
