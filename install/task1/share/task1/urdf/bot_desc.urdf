@@ -5,15 +5,16 @@
 
     <link name="base_link">
         <visual>
-            <origin xyz="0.0 0.0 1.0" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 0.25" rpy="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/bot_body.stl" />
-            </geometry>
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/bot_body.stl"
+                    scale="0.25 0.25 0.25" />
+            </geometry>1
         </visual>
         <collision>
-            <origin xyz="0.0 0.0 1.0" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 0.0 0.25" rpy="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/bot_body.stl" />
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/bot_body.stl" scale="0.25 0.25 0.25"/>
             </geometry>
         </collision>
         <inertial>
@@ -71,13 +72,13 @@
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_part.STL" />
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_part.STL"  scale="0.3 0.3 0.3"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
             <geometry>
-                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_part.STL" />
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_part.STL" scale="0.3 0.3 0.3"/>
             </geometry>
         </collision>
         <inertial>
@@ -92,13 +93,13 @@
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 1.57 0.0" />
             <geometry>
-                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_wheel.STL" />
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_wheel.STL" scale="0.3 0.3 0.3"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 1.57 0.0" />
             <geometry>
-                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_wheel.STL" />
+                <mesh filename="file:///home/sanjit/ros2_ws/src/task1/mesh/caster_wheel.STL" scale="0.3 0.3 0.3"/>
             </geometry>
         </collision>
         <inertial>
@@ -107,6 +108,12 @@
             <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.002" />
         </inertial>
     </link>
+
+    <gazebo reference="caster_wheel">
+        <material>Gazebo/Black</material>
+        <mu1>1</mu1>
+        <mu2>1</mu2>
+    </gazebo>
 
     <link name="lidar_cylinder">
         <visual>
@@ -132,34 +139,35 @@
 
 
     <joint name="base_joint" type="fixed">
-        <origin xyz="0.0 0.0 0.1" rpy="0.0 0.0 0.0" />
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
         <parent link="base_footprint" />
         <child link="base_link" />
     </joint>
 
+
+    <joint name="left_wheel_joint" type="continuous">
+        <origin xyz="-0.4 -0.36 0.14" rpy="0.0 0.0 0.0" />
+        <parent link="base_link" />
+        <child link="left_wheel" />
+        <axis xyz="-1.0 0.0 0.0" />
+    </joint>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <origin xyz="0.4 -0.36 0.14" rpy="0.0 0.0 0.0" />
+        <parent link="base_link" />
+        <child link="right_wheel" />
+        <axis xyz="-1.0 0.0 0.0" />
+    </joint>
+
     <joint name="part_joint" type="continuous">
-        <origin xyz="0.0 1.0 0.0" rpy="-1.57 0.0 0.0" />
+        <origin xyz="0.0 0.25 0.0" rpy="-1.57 0.0 0.0" />
         <parent link="base_link" />
         <child link="caster_part" />
         <axis xyz="0.0 1.0 0.0" />
     </joint>
 
-    <joint name="left_wheel_joint" type="continuous">
-        <origin xyz="-1.2 -1.0 0.1" rpy="0.0 0.0 0.0" />
-        <parent link="base_link" />
-        <child link="left_wheel" />
-        <axis xyz="1.0 0.0 0.0" />
-    </joint>
-
-    <joint name="right_wheel_joint" type="continuous">
-        <origin xyz="1.2 -1.0 0.1" rpy="0.0 0.0 0.0" />
-        <parent link="base_link" />
-        <child link="right_wheel" />
-        <axis xyz="1.0 0.0 0.0" />
-    </joint>
-
     <joint name="caster_wheel_joint" type="continuous">
-        <origin xyz="0.0 0.15 0.0" rpy="0.0 0.0 0.0" />
+        <origin xyz="0.0 0.045 0.02" rpy="0.0 0.0 0.0" />
         <parent link="caster_part" />
         <child link="caster_wheel" />
         <axis xyz="1.0 0.0 0.0" />
@@ -167,7 +175,7 @@
 
 
     <joint name="lidar_joint" type="fixed">
-        <origin xyz="0.0 0 2.0" rpy="0.0 0.0 0.0" />
+        <origin xyz="0.0 0 0.5" rpy="0.0 0.0 0.0" />
         <parent link="base_link" />
         <child link="lidar_cylinder" />
         <axis xyz="0.0 0.0 0.0" />
@@ -182,7 +190,7 @@
             <left_joint>left_wheel_joint</left_joint>
             <right_joint>right_wheel_joint</right_joint>
 
-            <wheel_separation>2</wheel_separation>
+            <wheel_separation>0.5</wheel_separation>
             <wheel_diameter>0.4</wheel_diameter>
 
             <max_wheel_torque>10</max_wheel_torque>
@@ -201,7 +209,7 @@
         <material>Gazebo/Red</material>
         <sensor name="laser" type="ray">
             <pose> 0 0 0 0 0 0 </pose>
-            <visualize>true</visualize>
+            <visualize>false</visualize>
             <update_rate>10</update_rate>
             <ray>
                 <scan>
@@ -221,7 +229,7 @@
                     <argument>~/out:=scan</argument>
                 </ros>
                 <output_type>sensor_msgs/LaserScan</output_type>
-                <frame_name>laser_frame</frame_name>
+                <frame_name>lidar_cylinder</frame_name>
             </plugin>
         </sensor>
     </gazebo>

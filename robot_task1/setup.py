@@ -14,21 +14,23 @@ setup(
         # Install package.xml
         ('share/' + package_name, ['package.xml']),
         # Install URDF files
-        (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),
+        (os.path.join('share', package_name, 'urdf'), glob(os.path.join(package_name, 'urdf', '*.urdf'))),
         # Install world files
-        (os.path.join('share', package_name, 'worlds'), glob('worlds/*.world')),
+        (os.path.join('share', package_name, 'worlds'), glob(os.path.join(package_name, 'worlds', '*.world'))),
         # Install launch files
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
+        (os.path.join('share', package_name, 'launch'), glob(os.path.join(package_name, 'launch', '*.py'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='your_name',
+    maintainer='sanjit',
     maintainer_email='your_email@example.com',
-    description='Robot Task1 Package',
+    description='Robot Task1 Package for navigation',
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [],
+        'console_scripts': [
+            'move = robot_task1.move:main',
+        ],
     },
 )
 
