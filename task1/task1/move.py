@@ -36,7 +36,7 @@ class Navigation(Node):
 
         elif self.rotate:
             if self.rotation_times<16:  
-                velocity.angular.z=1.57
+                velocity.angular.z = -1.57 if self.target_y < self.current_y else 1.57
                 self.pub_vel.publish(velocity)
                 self.rotation_times+=1
             else:
