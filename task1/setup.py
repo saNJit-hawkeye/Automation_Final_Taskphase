@@ -14,23 +14,26 @@ setup(
         # Install package.xml
         ('share/' + package_name, ['package.xml']),
         # Install URDF files
-        (os.path.join('share', package_name, 'urdf'), glob(package_name + '/urdf/*.urdf')),
+        (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),  
         # Install world files
-        (os.path.join('share', package_name, 'worlds'), glob(package_name + '/worlds/*.world')),
+        (os.path.join('share', package_name, 'worlds'), glob('worlds/*.world')),
         # Install launch files
-        (os.path.join('share', package_name, 'launch'), glob(package_name + '/launch/*.py')),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'srvpkg',  # This line tells Python to expect your service package
+    ],
     zip_safe=True,
-    maintainer='your_name',  # Replace with your actual name
-    maintainer_email='your_email@example.com',  # Replace with your email
-    description='bot Task1 Package',
+    maintainer='Sanjit',
+    maintainer_email='sanjit@example.com',
+    description='Task1 Robot Package',
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'move = task1.move:main',  # This registers the move.py script
+            'waypoint_service = task1.waypoint_service:main',
+            'move = task1.move:main',
+            'client = task1.client:main',
         ],
     },
-)
-
