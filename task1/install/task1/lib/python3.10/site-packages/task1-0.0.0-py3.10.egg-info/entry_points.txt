@@ -1,0 +1,4 @@
+[console_scripts]
+move = task1.move:main
+waypoint_service = task1.waypoint_service:main
+

@@ -1,4 +1,0 @@
-Invoking command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer -- -j16 -l16
-Invoked command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer -- -j16 -l16
-Invoking command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer
-Invoked command in '/home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/sanjit/ros2_ws/src/build/examples_rclcpp_minimal_timer

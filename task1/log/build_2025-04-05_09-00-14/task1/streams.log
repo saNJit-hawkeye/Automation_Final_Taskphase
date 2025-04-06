@@ -1,0 +1,24 @@
+[0.626s] Invoking command in '/home/sanjit/ros2_ws/src/task1': PYTHONPATH=/home/sanjit/ros2_ws/src/task1/build/task1/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/task1 build --build-base /home/sanjit/ros2_ws/src/task1/build/task1/build install --record /home/sanjit/ros2_ws/src/task1/build/task1/install.log --single-version-externally-managed install_data
+[0.877s] running egg_info
+[0.878s] writing build/task1/task1.egg-info/PKG-INFO
+[0.878s] writing dependency_links to build/task1/task1.egg-info/dependency_links.txt
+[0.878s] writing entry points to build/task1/task1.egg-info/entry_points.txt
+[0.878s] writing requirements to build/task1/task1.egg-info/requires.txt
+[0.878s] writing top-level names to build/task1/task1.egg-info/top_level.txt
+[0.880s] reading manifest file 'build/task1/task1.egg-info/SOURCES.txt'
+[0.880s] adding license file 'LICENSE'
+[0.881s] writing manifest file 'build/task1/task1.egg-info/SOURCES.txt'
+[0.881s] running build
+[0.881s] running build_py
+[0.881s] running install
+[0.881s] running install_lib
+[0.883s] running install_data
+[0.883s] copying package.xml -> /home/sanjit/ros2_ws/src/task1/install/task1/share/task1
+[0.883s] running install_egg_info
+[0.885s] removing '/home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1-0.0.0-py3.10.egg-info' (and everything under it)
+[0.885s] Copying build/task1/task1.egg-info to /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1-0.0.0-py3.10.egg-info
+[0.886s] running install_scripts
+[0.910s] Installing move script to /home/sanjit/ros2_ws/src/task1/install/task1/lib/task1
+[0.910s] Installing waypoint_service script to /home/sanjit/ros2_ws/src/task1/install/task1/lib/task1
+[0.910s] writing list of installed files to '/home/sanjit/ros2_ws/src/task1/build/task1/install.log'
+[0.934s] Invoked command in '/home/sanjit/ros2_ws/src/task1' returned '0': PYTHONPATH=/home/sanjit/ros2_ws/src/task1/build/task1/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/task1 build --build-base /home/sanjit/ros2_ws/src/task1/build/task1/build install --record /home/sanjit/ros2_ws/src/task1/build/task1/install.log --single-version-externally-managed install_data

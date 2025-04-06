@@ -1,0 +1,55 @@
+[0.663s] Invoking command in '/home/sanjit/ros2_ws/src/task1': PYTHONPATH=/home/sanjit/ros2_ws/src/task1/build/task1/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/task1 build --build-base /home/sanjit/ros2_ws/src/task1/build/task1/build install --record /home/sanjit/ros2_ws/src/task1/build/task1/install.log --single-version-externally-managed install_data
+[0.904s] running egg_info
+[0.905s] creating build/task1/task1.egg-info
+[0.905s] writing build/task1/task1.egg-info/PKG-INFO
+[0.905s] writing dependency_links to build/task1/task1.egg-info/dependency_links.txt
+[0.905s] writing entry points to build/task1/task1.egg-info/entry_points.txt
+[0.905s] writing requirements to build/task1/task1.egg-info/requires.txt
+[0.906s] writing top-level names to build/task1/task1.egg-info/top_level.txt
+[0.906s] writing manifest file 'build/task1/task1.egg-info/SOURCES.txt'
+[0.907s] reading manifest file 'build/task1/task1.egg-info/SOURCES.txt'
+[0.907s] adding license file 'LICENSE'
+[0.908s] writing manifest file 'build/task1/task1.egg-info/SOURCES.txt'
+[0.908s] running build
+[0.908s] running build_py
+[0.908s] creating /home/sanjit/ros2_ws/src/task1/build/task1/build
+[0.908s] creating /home/sanjit/ros2_ws/src/task1/build/task1/build/lib
+[0.908s] creating /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1
+[0.908s] copying task1/move.py -> /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1
+[0.908s] copying task1/service.py -> /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1
+[0.909s] copying task1/custom_odometry.py -> /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1
+[0.909s] copying task1/__init__.py -> /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1
+[0.909s] running install
+[0.909s] running install_lib
+[0.910s] creating /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1
+[0.910s] copying /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1/move.py -> /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1
+[0.910s] copying /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1/service.py -> /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1
+[0.910s] copying /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1/custom_odometry.py -> /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1
+[0.910s] copying /home/sanjit/ros2_ws/src/task1/build/task1/build/lib/task1/__init__.py -> /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1
+[0.911s] byte-compiling /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1/move.py to move.cpython-310.pyc
+[0.912s] byte-compiling /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1/service.py to service.cpython-310.pyc
+[0.912s] byte-compiling /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1/custom_odometry.py to custom_odometry.cpython-310.pyc
+[0.913s] byte-compiling /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1/__init__.py to __init__.cpython-310.pyc
+[0.913s] running install_data
+[0.913s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share
+[0.913s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/ament_index
+[0.913s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/ament_index/resource_index
+[0.913s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/ament_index/resource_index/packages
+[0.913s] copying resource/task1 -> /home/sanjit/ros2_ws/src/task1/install/task1/share/ament_index/resource_index/packages
+[0.913s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/task1
+[0.913s] copying package.xml -> /home/sanjit/ros2_ws/src/task1/install/task1/share/task1
+[0.913s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/urdf
+[0.913s] copying urdf/bot_desc.urdf -> /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/urdf
+[0.916s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/worlds
+[0.916s] copying worlds/empty.world -> /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/worlds
+[0.916s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/launch
+[0.916s] copying launch/gazebo_launch.py -> /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/launch
+[0.916s] creating /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/srv
+[0.916s] copying srv/Waypoint.srv -> /home/sanjit/ros2_ws/src/task1/install/task1/share/task1/srv
+[0.916s] running install_egg_info
+[0.919s] Copying build/task1/task1.egg-info to /home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages/task1-0.0.0-py3.10.egg-info
+[0.919s] running install_scripts
+[0.946s] Installing move script to /home/sanjit/ros2_ws/src/task1/install/task1/lib/task1
+[0.946s] Installing waypoint_service script to /home/sanjit/ros2_ws/src/task1/install/task1/lib/task1
+[0.946s] writing list of installed files to '/home/sanjit/ros2_ws/src/task1/build/task1/install.log'
+[0.973s] Invoked command in '/home/sanjit/ros2_ws/src/task1' returned '0': PYTHONPATH=/home/sanjit/ros2_ws/src/task1/build/task1/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/sanjit/ros2_ws/src/task1/install/task1/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/task1 build --build-base /home/sanjit/ros2_ws/src/task1/build/task1/build install --record /home/sanjit/ros2_ws/src/task1/build/task1/install.log --single-version-externally-managed install_data

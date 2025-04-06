@@ -30,6 +30,8 @@ setup(
     entry_points={
         'console_scripts': [
             'move = robot_task1.move:main',
+            'client=robot_task1.client:main',
+            'waypoint_service=robot_task1.waypoint_service:main',
         ],
     },
 )

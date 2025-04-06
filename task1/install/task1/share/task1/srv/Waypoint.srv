@@ -1,0 +1,6 @@
+int32 current_x
+int32 current_y
+---
+int32 next_x
+int32 next_y
+
