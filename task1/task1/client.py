@@ -61,7 +61,7 @@ class FollowPath(Node):
         elif self.state == 'move_y':
             desired_heading = 0 if self.targety > self.y else 2
             if self.y == self.targety:
-                self.state = 'move_x'  #y movement done,now move in x
+                self.state = 'move_x'  
             elif self.heading != desired_heading:
                 self.target_heading = desired_heading
                 self.rotation_time = 0.0
@@ -110,11 +110,16 @@ class FollowPath(Node):
             print("All waypoints reached.")
 
         self.publisher_.publish(msg)
-
+        
     def get_rotation_direction(self):
-        """Returns +1 or -1 for minimal rotation (right or left turn)."""
         diff = (self.target_heading - self.heading) % 4
-        return -1 if diff == 1 else 1
+        if diff == 1 or diff == -3:
+            return -1  
+        elif diff == 3 or diff == -1:
+            return +1  
+        elif diff == 2:
+            return 2  
+        return 0
 
 def main(args=None):  
     rclpy.init(args=args)  
