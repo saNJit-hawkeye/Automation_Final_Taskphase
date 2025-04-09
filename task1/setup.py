@@ -37,3 +37,4 @@ setup(
             'client = task1.client:main',
         ],
     },
+)
