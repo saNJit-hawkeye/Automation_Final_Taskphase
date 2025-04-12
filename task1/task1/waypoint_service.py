@@ -7,7 +7,7 @@ class WaypointService(Node):
     def __init__(self):
         super().__init__('waypoint_service')
         self.srv = self.create_service(Waypoint,'next_waypoint',self.next_waypoint)
-        self.waypoints=[(3,5),(3,10),(0,0)]
+        self.waypoints=[(3,5),(4,7),(6,0)]
         self.i=0
 
     def next_waypoint(self, request, response): 

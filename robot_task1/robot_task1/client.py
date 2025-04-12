@@ -1,37 +1,64 @@
-
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from srvpkg.srv import Waypoint
+from sensor_msgs.msg import LaserScan
+import math
 
-class ClientAsync(Node):  
+class FollowPath(Node):  
     def __init__(self):  
-        super().__init__('client_async')
-        
+        super().__init__('follow_path')
         self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)  
         self.cli = self.create_client(Waypoint, 'next_waypoint')
-
         while not self.cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('Waiting for waypoint service...')
 
-        self.timer = self.create_timer(0.5, self.movement)
-
-        # Robot state
+        self.timer_period = 0.1 
+        self.timer = self.create_timer(self.timer_period, self.movement)
         self.x = 0
         self.y = 0
+        self.heading = 0  #0=north, 1=east, 2=south, 3=west
         self.targetx = None
         self.targety = None
-        self.state = 'request'
-        self.current_heading = 0 
+        self.state = "request"
+        self.pause_counter = 0
+        self.rotation_time = 0.0
+        self.move_time = 0.0
+        self.target_heading = 0
+        self.angular_speed = 22 / (4*7)  
+        self.linear_speed = 0.5          
+        self.rotation_duration =  22/ (0.8*7) / self.angular_speed  
+        self.move_duration = 4.0          
+        
+        self.waypoints_done = 0
+        self.max_waypoints = 3
 
-        self.time_remaining = 0
-        self.action_timer = None
+        self.laser_sub = self.create_subscription(LaserScan, '/scan', self.lidar_callback, 10)
+        self.closest_obstacle = float('inf')
+        self.object_detected = False
+        self.safe_distance = 1.0
 
+        self.avoid_step = 0
+        self.avoid_timer = 0.0
+        
+    def lidar_callback(self,msg):
+        self.get_logger().info(f"Angle min: {msg.angle_min:.2f}, max: {msg.angle_max:.2f}, increment: {msg.angle_increment:.4f}, length: {len(msg.ranges)}")
+        self.closest_object = float('inf')
+        middle=len(msg.ranges)//2
+        front_values=msg.ranges[middle-25:middle+25]
+        for i in front_values:
+            if msg.range_min<i<msg.range_max:
+                if i<self.closest_object:
+                    self.closest_object=i
+        self.object_detected=self.closest_object<self.safe_distance
+        self.get_logger().debug("LiDAR callback triggered. Sample range: {:.2f}".format(msg.ranges[len(msg.ranges)//2]))
+                    
+    
     def request_waypoint(self):
         request = Waypoint.Request()
         request.x = float(self.x)
         request.y = float(self.y)
-        self.get_logger().info(f"Requesting next waypoint from ({self.x}, {self.y})")
+        self.get_logger().info(f"Requesting waypoint from:({self.x},{self.y})...")
         future = self.cli.call_async(request)
         future.add_done_callback(self.handle_response)
 
@@ -40,134 +67,132 @@ class ClientAsync(Node):
             response = future.result()
             self.targetx = int(response.next_x)
             self.targety = int(response.next_y)
-            self.get_logger().info(f"Received next waypoint: ({self.targetx}, {self.targety})")
-            self.state = 'decide'
+            self.get_logger().info(f"Received waypoint {self.waypoints_done+1}: ({self.targetx},{self.targety})")
+            self.state = 'move_y'
         except Exception as e:
             self.get_logger().error(f"Service call failed: {e}")
             self.state = 'done'
 
-    def stop(self):
-        msg = Twist()
-        msg.linear.x = 0.0
-        msg.angular.z = 0.0
-        self.publisher_.publish(msg)
-        self.state = 'decide'
-
-    def move_forward(self, duration=3):
-        msg = Twist()
-        msg.linear.x = 0.5
-        self.publisher_.publish(msg)
-        print(f"Moving forward for {duration} seconds.")
-        self.time_remaining = duration
-        self.action_timer = self.create_timer(1.0, self.update_move)
-
-    def rotate_to(self, target_heading):
-        diff = (target_heading - self.current_heading) % 4
-        if diff == 0:
-            return  
-        elif diff == 1:
-            speed = -0.5  # Left turn
-        elif diff == 3:
-            speed = 0.5   # Right turn
-        elif diff == 2:
-            speed = 0.5   # 180° turn (choose right for consistency)
-
-        duration = 5.8 * (1 if diff in [1, 3] else 2)
-
-        msg = Twist()
-        msg.angular.z = speed
-        self.publisher_.publish(msg)
-        self.get_logger().info(f"Rotating from {self.current_heading} to {target_heading}")
-        
-        self.time_remaining = duration
-        self.next_heading = target_heading
-        self.action_timer = self.create_timer(1.0, self.update_rotate)
-
-
-
-    def update_move(self):
-        self.time_remaining -= 1
-        if self.time_remaining <= 0:
-            self.action_timer.cancel()
-            self.update_position()
-
-            if (self.x, self.y) == (self.targetx, self.targety):
-                self.get_logger().info(f"Reached FINAL waypoint at ({self.x}, {self.y})")
-                self.stop()
-                self.state = 'done'  # Stop everything — mission complete
-            else:
-                self.state = 'decide'  # Continue to next cell
-
-            
-
-    def update_rotate(self):
-        self.time_remaining -= 1
-        if self.time_remaining <= 0:
-            self.action_timer.cancel()
-            self.current_heading = self.next_heading
-
-            # After rotation, go directly to move forward
-            self.move_forward()
-
-
-    def update_position(self):
-        if self.current_heading == 0:
-            self.y += 1
-        elif self.current_heading == 1:
-            self.x += 1
-        elif self.current_heading == 2:
-            self.y -= 1
-        elif self.current_heading == 3:
-            self.x -= 1
-        print(f"Now at ({self.x}, {self.y}) heading {self.current_heading}")
-
     def movement(self):
+        msg = Twist()
         if self.state == 'request':
-            self.request_waypoint()
-
-        elif self.state == 'decide':
-            if (self.x, self.y) == (self.targetx, self.targety):
-                print("Reached current waypoint.")
-                self.state = 'request'  # Ask for the next waypoint
-                return
-
-            # Decide step direction
-            if self.y < self.targety:
-                desired_heading = 0  # North
-            elif self.y > self.targety:
-                desired_heading = 2  # South
-            elif self.x < self.targetx:
-                desired_heading = 1  # East
-            elif self.x > self.targetx:
-                desired_heading = 3  # West
+            if self.waypoints_done < self.max_waypoints:
+                self.request_waypoint()
             else:
+                self.state = 'done'
+
+        elif self.state == 'move_y':
+            desired_heading = 0 if self.targety > self.y else 2
+            if self.y == self.targety:
+                self.state = 'move_x'  
+            elif self.heading != desired_heading:
+                self.target_heading = desired_heading
+                self.rotation_time = 0.0
+                self.state = 'rotate'
+            elif self.object_detected:
+                self.get_logger().info("Object detected, dodging it")
+                self.target_heading=(self.heading+1)%4
+                self.rotation_time=0.0
+                self.state='turn_avoid_obj'
+            else:
+                msg.linear.x = self.linear_speed
+                self.move_time += self.timer_period
+                if self.move_time >= self.move_duration:
+                    self.y += 1 if self.targety > self.y else -1
+                    self.move_time = 0.0
+                    print(f"Step complete  Position: ({self.x}, {self.y})")
+
+        elif self.state == 'move_x':
+            desired_heading = 1 if self.targetx > self.x else 3
+            if self.x == self.targetx:
+                self.state = 'done_check'
+            elif self.heading != desired_heading:
+                self.target_heading = desired_heading
+                self.rotation_time = 0.0
+                self.state = 'rotate'
+            elif self.object_detected:
+                self.get_logger().info("Object detected, dodging it")
+                self.target_heading=(self.heading+1)%4
+                msg.linear.x=0.0
+                self.rotation_time=0.0
+                self.state='turn_avoid_obj'
+            else:
+                msg.linear.x = self.linear_speed
+                self.move_time += self.timer_period
+                if self.move_time >= self.move_duration:
+                    self.x += 1 if self.targetx > self.x else -1
+                    self.move_time = 0.0
+                    print(f"Step complete  Position: ({self.x}, {self.y})")
+
+        elif self.state == 'done_check':
+                print(f"Destination reached at ({self.x}, {self.y})")
                 self.state = 'request'
-                return
+                self.waypoints_done += 1
 
-            if self.current_heading != desired_heading:
-                self.rotate_to(desired_heading)
+        elif self.state == 'rotate':
+            if self.rotation_time < self.rotation_duration:
+                msg.angular.z = self.get_rotation_direction() * self.angular_speed
+                self.rotation_time += self.timer_period
             else:
-                self.move_forward()
-
-            self.state = 'wait'
-
-        elif self.state == 'wait':
-            # Waiting for move/rotate to finish
-            pass
-
+                self.heading = self.target_heading
+                self.state = 'move_y' if self.y != self.targety else 'move_x'
+                msg.angular.z = 0.0
+                
+        elif self.state=='turn_avoid_obj':
+            if self.rotation_time < self.rotation_duration:
+                msg.angular.z = -self.angular_speed
+                self.rotation_time += self.timer_period
+            else:
+                self.heading=self.target_heading
+                self.rotation_time=0.0
+                self.move_time=0.0
+                self.state='move_forward'
+                
+        elif self.state=='move_forward':
+            msg.linear.x=self.linear_speed
+            self.move_time+=self.timer_period
+            if self.move_time >= self.move_duration:
+                if self.heading==0:
+                    self.y+=1
+                elif self.heading==1:
+                    self.x+=1
+                elif self.heading == 2:
+                    self.y-=1
+                elif self.heading == 3:
+                    self.x-=1
+                self.move_time=0.0
+                self.get_logger().info(f"Avoided to ({self.x},{self.y})")
+                if self.y!=self.targety:
+                    self.state='move_y'
+                else:
+                    self.state='move_x'
+                            
         elif self.state == 'done':
-            self.stop()
+            msg.linear.x = 0.0
+            msg.angular.z = 0.0
+            print("All waypoints reached.")
+
+        self.publisher_.publish(msg)
+        
+    def get_rotation_direction(self):
+        diff = (self.target_heading - self.heading) % 4
+        if diff == 1 or diff == -3:
+            return -1  
+        elif diff == 3 or diff == -1:
+            return +1  
+        elif diff == 2:
+            return 2  
+        return 0
 
 def main(args=None):  
     rclpy.init(args=args)  
-    node = ClientAsync()  
+    node = FollowPath()  
     rclpy.spin(node)  
     node.destroy_node()  
     rclpy.shutdown()  
 
 if __name__ == '__main__':  
     main()
-
 
 
 
