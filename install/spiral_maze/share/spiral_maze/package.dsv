@@ -1,0 +1,8 @@
+source;share/spiral_maze/hook/cmake_prefix_path.ps1
+source;share/spiral_maze/hook/cmake_prefix_path.dsv
+source;share/spiral_maze/hook/cmake_prefix_path.sh
+source;share/spiral_maze/local_setup.bash
+source;share/spiral_maze/local_setup.dsv
+source;share/spiral_maze/local_setup.ps1
+source;share/spiral_maze/local_setup.sh
+source;share/spiral_maze/local_setup.zsh

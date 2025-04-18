@@ -35,7 +35,7 @@ class FollowPath(Node):
         self.post_avoid_state = None
 
         self.laser_sub = self.create_subscription(LaserScan, '/scan', self.lidar_callback, 10)
-        self.closest_obstacle = float('inf')
+        self.closest_object = float('inf')
         self.object_detected = False
         self.safe_distance = 0.7
 

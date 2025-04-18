@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<sdf version='1.4'>
+  <model name='spiral_maze_model'>
+    <static>true</static>
+    <link name="sign">
+      <visual name="visual">
+            <geometry>
+                <mesh>
+                    <uri>model://spiral_maze_model/materials/meshes/maze_v1.stl</uri>
+		    <scale>0.1 0.1 0.1</scale>
+                </mesh>
+            </geometry>
+        </visual>
+        <collision name="collision">
+            <geometry>
+                <mesh>
+                    <uri>model://spiral_maze_model/materials/meshes/maze_v1.stl</uri>
+		    <scale>0.1 0.1 0.1</scale>
+                </mesh>
+            </geometry>
+        </collision>
+    </link>
+  </model>
+</sdf>
