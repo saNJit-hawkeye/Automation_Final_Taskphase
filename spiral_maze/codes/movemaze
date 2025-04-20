@@ -1,0 +1,270 @@
+#!/usr/bin/env python3
+
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+from sensor_msgs.msg import LaserScan
+import time
+
+class MyNode(Node):  
+    def __init__(self):  
+        super().__init__('my_node')
+        self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)  
+        self.timer_period = 0.1  
+        self.timer = self.create_timer(self.timer_period, self.flow)
+        self.laser_sub = self.create_subscription(LaserScan, '/scan', self.lidar_callback, 10)
+
+        self.desired_left = 1.2
+        self.desired_right = 1.2
+        self.kp = 0.4
+        self.kd = 0.165
+        self.previous_error = 0.0
+        self.avg_left_dist = 10.0  
+        self.avg_fwd_dist = 10.0
+        self.avg_right_dist = 10.0   
+        self.gap_detected = False
+        self.following_wall = True
+        self.doing_gap_maneuver = False
+        self.counter = 0
+        self.wall_follow = 'left'
+
+        # path finding
+        self.dtheta = 0
+        self.path_stack = []
+        self.current_node = 0
+        self.backtracking = False
+        
+        self.linear_speed = 0.5
+        self.angular_speed = 22 * 0.8/ (4 * 7)
+        self.move_duration = 2.0
+        self.rotation_duration = 2.0
+
+
+    def lidar_callback(self, msg):
+        left_index = (len(msg.ranges) // 2) + 90
+        fwd_index = (len(msg.ranges) // 2) 
+        right_index = (len(msg.ranges) // 2) - 90  
+
+        left_window = msg.ranges[left_index-15:left_index+15]
+        fwd_window = msg.ranges[fwd_index-15:fwd_index+15]
+        right_window = msg.ranges[right_index-15:right_index+15]
+
+        left_sum = 0
+        left_count = 0
+        fwd_sum = 0
+        fwd_count = 0
+        right_sum = 0
+        right_count = 0
+
+        for i in left_window:
+            if msg.range_min < i < msg.range_max:
+                left_sum += i
+                left_count += 1
+
+        for j in fwd_window:
+            if msg.range_min < j < msg.range_max:
+                fwd_sum += j
+                fwd_count += 1
+
+        for k in right_window:
+            if msg.range_min < k < msg.range_max:
+                right_sum += k
+                right_count += 1
+
+        self.avg_left_dist = left_sum / left_count if left_count > 0 else 10
+        self.avg_fwd_dist = fwd_sum / fwd_count if fwd_count > 0 else 10
+        self.avg_right_dist = right_sum / right_count if right_count > 0 else 10
+
+        # Gap detection
+        if self.following_wall:
+            if self.wall_follow == 'left' and self.avg_left_dist > 1.75:
+                self.get_logger().info("Gap detected on the left")
+                self.gap_detected = 'left'
+                self.following_wall = False
+            elif self.wall_follow == 'right' and self.avg_right_dist > 1.75:
+                self.get_logger().info("Gap detected on the right")
+                self.gap_detected = 'right'
+                self.following_wall = False
+
+    def flow(self):
+        self.get_logger().debug(f"Flow running | Counter = {self.counter}, Following wall = {self.following_wall}, In gap = {self.doing_gap_maneuver}")
+
+        if self.gap_detected:
+            self.doing_gap_maneuver = True
+            self.get_logger().info(f"Executing gap maneuver | Counter before = {self.counter}")
+            self.do_gap_maneuver()
+            self.doing_gap_maneuver = False
+            self.following_wall = True
+            self.gap_detected = False
+            return
+
+        if self.following_wall:
+            if self.wall_follow == 'left':
+                error = self.desired_left - self.avg_left_dist
+            else:
+                error = self.desired_right -self.avg_right_dist
+
+            derivative = (error - self.previous_error) / self.timer_period
+            correction = self.kp * error + self.kd * derivative
+            self.previous_error = error
+
+            msg = Twist()
+            msg.linear.x = self.linear_speed
+            msg.angular.z = -correction if self.wall_follow == 'left' else correction
+            self.dtheta += msg.angular.z * self.timer_period
+            self.publisher_.publish(msg)
+
+            self.get_logger().info(
+                f"Following {self.wall_follow} wall | Linear: {msg.linear.x:.2f}, Angular: {msg.angular.z:.2f} | L: {self.avg_left_dist:.2f}, F: {self.avg_fwd_dist:.2f}, R: {self.avg_right_dist:.2f} | Sigma dTheta: {self.dtheta:.2f}"
+            )
+
+
+    def do_gap_maneuver(self):
+        self.get_logger().info("Starting gap maneuver...")
+
+        avg_displacement = abs(self.dtheta)
+        edge = {"from": self.current_node,"to": self.current_node + 1,"avg_displacement": avg_displacement}
+
+        if not self.backtracking:
+            if self.counter < 6:
+                self.path_stack.append(edge)
+                self.get_logger().info(f"Recorded edge: {edge}")
+            else:
+                self.get_logger().info("Max path length reached, not recording more edges.")
+
+            self.current_node += 1
+            self.dtheta = 0
+
+            if self.gap_detected == 'left':
+                self.move_forward()
+                self.turn_left()
+                self.move_forward()
+                self.move_forward()
+                self.move_forward()
+                if self.counter == 5:
+                    self.turn_left()
+                    self.move_forward()
+                    self.move_forward()
+                else:
+                    self.turn_right()
+
+            elif self.gap_detected == 'right':
+                self.turn_right()
+                self.move_forward()
+                self.move_forward()
+                self.move_forward()
+                self.turn_left()
+
+            self.counter += 1
+            self.get_logger().info(f"Gap maneuver complete. present counter value = {self.counter}")
+
+            if self.counter == 6:
+                self.backtracking = True
+                self.get_logger().info("reached centre of the maze. Beginning backtracking.")
+
+        else:
+            self.get_logger().info("Backtracking mode active.")
+            edge = self.path_stack.pop()  
+            avg_displacement = edge['avg_displacement']
+            from_node = edge['from']
+            to_node = edge['to']
+            self.get_logger().info(f"Backtracking from node {to_node} to {from_node} with cost {avg_displacement:.2f}")
+
+            if avg_displacement < 3.34:
+                self.get_logger().info(f"Mimicking maneuver for node {from_node} to {to_node}")
+                self.execute_mimic_maneuver()
+            else:
+                self.get_logger().info(f"Taking alternate maneuver for node {from_node} to {to_node}")
+                self.execute_alternate_maneuver()
+                self.switch_wall_following_side()
+
+            self.current_node -= 1
+            self.dtheta = 0
+            self.counter -= 1
+
+        self.doing_gap_maneuver = False
+        self.following_wall = True
+        self.gap_detected = False
+
+        if self.backtracking and len(self.path_stack) == 0:
+            self.get_logger().info("Backtracking complete. Robot has returned to start.")
+
+
+    def turn_left(self):
+        msg = Twist()
+        msg.linear.x = 0.0
+        msg.angular.z = self.angular_speed
+        self.publisher_.publish(msg)
+        time.sleep(self.rotation_duration)
+        self.stop()
+    
+    def move_forward(self):
+        msg = Twist()
+        msg.linear.x = self.linear_speed
+        msg.angular.z = 0.0
+        self.publisher_.publish(msg)
+        time.sleep(self.move_duration)
+        self.stop()
+
+    def turn_right(self):
+        msg = Twist()
+        msg.linear.x = 0.0
+        msg.angular.z = -self.angular_speed
+        self.publisher_.publish(msg)
+        time.sleep(self.rotation_duration)
+        self.stop()
+
+
+    def execute_mimic_maneuver(self):
+        self.move_forward()
+        if self.wall_follow == 'left':
+            self.turn_left()
+        else:
+            self.turn_right()
+        self.move_forward()
+        self.move_forward()
+        self.move_forward()
+        if self.wall_follow == 'left':
+            self.turn_right()
+        else:
+            self.turn_left()
+
+    def execute_alternate_maneuver(self):
+        self.move_forward()
+        if self.wall_follow == 'left':
+            self.turn_left()
+        else:
+            self.turn_right()
+        self.move_forward()
+        self.move_forward()
+        self.move_forward()
+        if self.wall_follow == 'left':
+            self.turn_left()
+        else:
+            self.turn_right()
+
+    def switch_wall_following_side(self):
+        old_side = self.wall_follow
+        self.wall_follow = 'right' if self.wall_follow == 'left' else 'left'
+        self.get_logger().info(f"Switched from {old_side.upper()} wall to FOLLOWING {self.wall_follow.upper()} wall.")
+
+
+    def stop(self):
+        msg = Twist()
+        msg.linear.x = 0.0
+        msg.angular.z = 0.0
+        self.publisher_.publish(msg)
+        time.sleep(0.1)
+
+
+def main(args=None):   
+    rclpy.init(args=args)  
+    node = MyNode()  
+    rclpy.spin(node)  
+    node.destroy_node()  
+    rclpy.shutdown()  
+
+if __name__ == '__main__':  
+    main()
